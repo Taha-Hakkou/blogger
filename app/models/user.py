@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from datetime import datetime
 import uuid
+from app import bcrypt
 from itsdangerous import URLSafeTimedSerializer as Serializer
 
 from flask import current_app
@@ -16,23 +17,22 @@ from app import login_manager
 def load_user(user_id):
     return db.session.query(User).get(user_id)
 ###
-
 from app import db
-class User(UserMixin, Model):
-    __tablename__ = 'users'
+class User(db.Model, UserMixin):
+    #__tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)#, default=str(uuid.uuid4()))
-    username = db.Column(db.String(20), unique=True, nullable=False, default='username')
-    email = db.Column(db.String(120), unique=True, nullable=False, default='username@home.xyz')
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
-    password = db.Column(db.String(60), nullable=False, default='password')
-    posts = db.relationship('Post', backref='author', cascade='all, delete, delete-orphan')#, lazy=True)
+    password = db.Column(db.String(60), nullable=False)
+    posts = db.relationship('Post', backref='author', lazy=True, cascade='all, delete, delete-orphan')
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
     def get_reset_token(self, expires_sec=1800):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        s = Serializer(current_app.config['SECRET_KEY'])#, expires_sec)
+        return s.dumps({'user_id': self.id})#.decode('utf-8')
 
     @staticmethod
     def verify_reset_token(token):

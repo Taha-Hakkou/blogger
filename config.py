@@ -1,32 +1,24 @@
 import os
-from flask_appbuilder.security.manager import (
-    AUTH_OID,
-    AUTH_REMOTE_USER,
-    AUTH_DB,
-    AUTH_LDAP,
-    AUTH_OAUTH,
-)
+from flask_appbuilder.security.manager import AUTH_DB
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Your App secret key
+# App secret key
 SECRET_KEY = "bloggerbloggerblogger"
 
 # --------------------------------
 # .env
 # --------------------------------
 BLOGGER_MYSQL_USER = 'root'
-BLOGGER_MYSQL_PWD = 'Hakkou2001'
+BLOGGER_MYSQL_PWD = os.environ.get('BLOGGER_MYSQL_PWD')
 BLOGGER_MYSQL_HOST = 'localhost'
 BLOGGER_MYSQL_DB = 'blogger_dev_db'
 
 # The SQLAlchemy connection string.
-# SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "app.db")
 SQLALCHEMY_DATABASE_URI = 'mysql://{}:{}@{}/{}'.format(BLOGGER_MYSQL_USER,
                                                        BLOGGER_MYSQL_PWD,
                                                        BLOGGER_MYSQL_HOST,
                                                        BLOGGER_MYSQL_DB)
-# SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
 
 # Flask-WTF flag for CSRF
 CSRF_ENABLED = True
@@ -44,10 +36,6 @@ CSRF_ENABLED = True
 # AUTHENTICATION CONFIG
 # ----------------------------------------------------
 # The authentication type
-# AUTH_OID : Is for OpenID
-# AUTH_DB : Is for database (username/password()
-# AUTH_LDAP : Is for LDAP
-# AUTH_REMOTE_USER : Is for using REMOTE_USER from web server
 AUTH_TYPE = AUTH_DB
 
 # Uncomment to setup Full admin role name
@@ -62,15 +50,9 @@ AUTH_USER_REGISTRATION = True
 # The default user self registration role
 AUTH_USER_REGISTRATION_ROLE = "Public"
 
-# When using LDAP Auth, setup the ldap server
-# AUTH_LDAP_SERVER = "ldap://ldapserver.new"
+# to remove some warnings !
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# Uncomment to setup OpenID providers example for OpenID authentication
-# OPENID_PROVIDERS = [
-#    { 'name': 'Yahoo', 'url': 'https://me.yahoo.com' },
-#    { 'name': 'AOL', 'url': 'http://openid.aol.com/<username>' },
-#    { 'name': 'Flickr', 'url': 'http://www.flickr.com/<username>' },
-#    { 'name': 'MyOpenID', 'url': 'https://www.myopenid.com' }]
 # ---------------------------------------------------
 # Babel config for translations
 # ---------------------------------------------------
@@ -121,22 +103,9 @@ IMG_UPLOAD_URL = "/static/uploads/"
 # APP_THEME = "yeti.css"
 
 
-
-
-
-""" other project
-
-import os
-
-
-class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    
-    MAIL_SERVER = 'smtp.googlemail.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('EMAIL_USER')
-    MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
-
-"""
+# Email server
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'taha.hakkou42@gmail.com' #os.environ.get('EMAIL_USER')
+MAIL_PASSWORD = os.environ.get('EMAIL_PASS')

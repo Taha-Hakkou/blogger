@@ -1,4 +1,80 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>About Page</h1>
+    <!-- Hero -->
+    <div class="container px-4 py-5"> <!--  col-xxl-8 -->
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+            <img src="{{ url_for('static', filename='img/hero_image.png') }}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">Start your blogging journey with Blogger</h1>
+            <p class="lead">Welcome to Blogger! We're a community of passionate writers dedicated to sharing ideas with the world. Whether you're a seasoned expert or just starting your journey, we offer insightful articles, engaging discussions, and a friendly atmosphere to learn, grow, and be inspired. Dive in, explore our posts, and join the conversation!</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                {% if current_user.is_authenticated %}
+                    <a type="button" class="btn btn-info btn-lg px-4 me-md-2" href="{{ url_for('users.account') }}">Account</a>
+                    <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('users.logout') }}">Logout</a>
+                {% else %}
+                    <a type="button" class="btn btn-info btn-lg px-4 me-md-2" href="{{ url_for('users.login') }}">Login</a>
+                    <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('users.register') }}">Register</a>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients-->
+    <div class="py-5">
+        <div class="container">
+            <h1 class="pb-2 text-info text-center">Sponsors</h1>
+            <div class="row align-items-center">
+                <div class="col-md-3 col-sm-6 my-3">
+                    <a href="https://holbertonschool.com"><img class="img-fluid img-brand d-block mx-auto" src="{{ url_for('static', filename='img/clients/holberton.webp') }}" alt="..." aria-label="Holberton Logo" /></a>
+                </div>
+                <div class="col-md-3 col-sm-6 my-3">
+                    <a href="https://alxafrica.com"><img class="img-fluid img-brand d-block mx-auto" src="{{ url_for('static', filename='img/clients/alx.svg') }}" alt="..." aria-label="ALX Logo" /></a>
+                </div>
+                <div class="col-md-3 col-sm-6 my-3">
+                    <a href="https://mastercard.com"><img class="img-fluid img-brand d-block mx-auto" src="{{ url_for('static', filename='img/clients/mastercard.webp') }}" alt="..." aria-label="Mastercard Logo" /></a>
+                </div>
+                <div class="col-md-3 col-sm-6 my-3">
+                    <a href="https://aws.com"><img class="img-fluid img-brand d-block mx-auto" src="{{ url_for('static', filename='img/clients/aws.webp') }}" alt="..." aria-label="AWS Logo" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Features -->
+    <div class="container px-4 py-5">
+        <h1 class="pb-2 text-info text-center">Services</h1>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-display"></i>
+            </div>
+            <div>
+                <h2>Simple interface</h2>
+                <p>Our clean interface features intuitive icons and minimal menus, making navigation a breeze.</p>
+            </div>
+            </div>
+            <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-file-post"></i>
+            </div>
+            <div>
+                <h2>Unlimited content</h2>
+                <p>Dive deeper, never hit a dead end. Explore unlimited content with new discoveries every scroll.</p>
+            </div>
+            </div>
+            <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-lock-fill"></i>
+            </div>
+            <div>
+                <h2>Privacy & Security</h2>
+                <p>Your privacy is our priority. We offer granular controls to manage what data you share and keep your content secure.</p>
+            </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

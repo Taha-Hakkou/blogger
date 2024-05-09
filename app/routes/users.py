@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
-from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required
 #from app import bcrypt
 from app.models.user import User
 from app.models.post import Post
@@ -10,8 +10,8 @@ from app.utils.users import save_picture, send_reset_email
 users = Blueprint('users', __name__)
 
 
-from app import db
-@users.route("/register", methods=['GET', 'POST'])
+from app import db, current_user
+@users.route("/register", methods=['GET', 'POST'], strict_slashes=False)
 def register():
     from app import bcrypt
     if current_user.is_authenticated:
@@ -27,7 +27,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@users.route("/login", methods=['GET', 'POST'])
+@users.route("/login", methods=['GET', 'POST'], strict_slashes=False)
 def login():
     from app import bcrypt
     if current_user.is_authenticated:
@@ -37,29 +37,22 @@ def login():
         user = db.session.query(User).filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
+            from app import app
+            app.logger.info('%s logged in successfully', user.username)###
             next_page = request.args.get('next')
-            """
-            if user is not None:
-                if next_page is None:
-                    return redirect(url_for('main.home'))
-                else:
-                    return redirect(next_page)
-                    """
-            page = request.args.get('page', 1, type=int)
-            posts = db.session.query(Post).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-            return render_template('home.html', posts=posts)
+            return redirect(next_page if next_page else url_for('main.home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 
-@users.route("/logout")
+@users.route("/logout", strict_slashes=False)
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
 
-@users.route("/account", methods=['GET', 'POST'])
+@users.route("/account", methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def account():
     form = UpdateAccountForm()
@@ -75,12 +68,12 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    image_file = url_for('static', filename='profile_pics/' + db.session.query(User).get(current_user.id).image_file) ##
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
 
 
-@users.route("/user/<string:username>")
+@users.route("/user/<string:username>", strict_slashes=False)
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = db.session.query(User).filter_by(username=username).first_or_404()
@@ -90,7 +83,7 @@ def user_posts(username):
     return render_template('user_posts.html', posts=posts, user=user)
 
 
-@users.route("/reset_password", methods=['GET', 'POST'])
+@users.route("/reset_password", methods=['GET', 'POST'], strict_slashes=False)
 def reset_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -103,7 +96,7 @@ def reset_request():
     return render_template('reset_request.html', title='Reset Password', form=form)
 
 
-@users.route("/reset_password/<token>", methods=['GET', 'POST'])
+@users.route("/reset_password/<token>", methods=['GET', 'POST'], strict_slashes=False)
 def reset_token(token):
     from app import bcrypt
     if current_user.is_authenticated:

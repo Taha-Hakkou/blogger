@@ -4,21 +4,11 @@ from flask_appbuilder import ModelView, ModelRestApi, expose, has_access
 
 from . import appbuilder, db
 """
-class Home(ModelView):
+class HomeView(ModelView):
+    datamodel = SQLAInterface(User)
 
-    #default_view = 'method1'
-
-    @expose('/')
-    @has_access
-    def home(self):
-        # do something with param1
-        # and return to previous page or index
-        page = request.args.get('page', 1, type=int)
-        posts = db.session.query(Post).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-        return render_template('home.html', posts=posts)
-
-#appbuilder.add_view(Home, "home", category='Home')
-appbuilder.add_link("home", href='/home', category='Home')
+appbuilder.add_view(HomeView, "home")
+#appbuilder.add_link("home", href='/home', category='Home')
 """
 """
     Create your Model based REST API::
@@ -66,5 +56,3 @@ def error_403(error):
 @appbuilder.app.errorhandler(500)
 def error_500(error):
     return render_template('errors/500.html'), 500
-
-db.create_all()
