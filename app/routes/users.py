@@ -1,6 +1,7 @@
+#!/usr/bin/python3
+""" users routes """
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, logout_user, login_required
-#from app import bcrypt
 from app.models.user import User
 from app.models.post import Post
 from app.forms.users import (RegistrationForm, LoginForm, UpdateAccountForm,
@@ -13,6 +14,7 @@ users = Blueprint('users', __name__)
 from app import db, current_user
 @users.route("/register", methods=['GET', 'POST'], strict_slashes=False)
 def register():
+    """ Renders register form (GET) or creates new user (POST) """
     from app import bcrypt
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -29,6 +31,7 @@ def register():
 
 @users.route("/login", methods=['GET', 'POST'], strict_slashes=False)
 def login():
+    """ Renders login form (GET) or logs in user (POST) """
     from app import bcrypt
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -48,6 +51,7 @@ def login():
 
 @users.route("/logout", strict_slashes=False)
 def logout():
+    """ Logs user out """
     logout_user()
     return redirect(url_for('main.home'))
 
@@ -55,6 +59,7 @@ def logout():
 @users.route("/account", methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def account():
+    """ Renders account page (GET) or updates account (POST) """
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -75,6 +80,7 @@ def account():
 
 @users.route("/user/<string:username>", strict_slashes=False)
 def user_posts(username):
+    """ Renders user posts page """
     page = request.args.get('page', 1, type=int)
     user = db.session.query(User).filter_by(username=username).first_or_404()
     posts = db.session.query(Post).filter_by(author=user)\
@@ -85,6 +91,7 @@ def user_posts(username):
 
 @users.route("/reset_password", methods=['GET', 'POST'], strict_slashes=False)
 def reset_request():
+    """ Renders reset password request form (GET) or sends reset email (POST) """
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     form = RequestResetForm()
@@ -98,6 +105,7 @@ def reset_request():
 
 @users.route("/reset_password/<token>", methods=['GET', 'POST'], strict_slashes=False)
 def reset_token(token):
+    """ Renders reset password form (GET) or resets password (POST) """
     from app import bcrypt
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
